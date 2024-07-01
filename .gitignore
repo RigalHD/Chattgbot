@@ -1,2 +1,12 @@
 venv/
+.vscode/
+__pycache__/
+.idea/
+
+.pyc
+.env
+
+my_account.session
+
 *.db
+.db
