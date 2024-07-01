@@ -6,6 +6,7 @@ __pycache__/
 .pyc
 .env
 
+test_.txt
 my_account.session
 
 *.db
