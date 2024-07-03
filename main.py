@@ -12,6 +12,7 @@ import main_menu.callbacks
 from keyboards.inline import main_menu_kb
 from keyboards.reply import auth_kb
 from main_menu.states import AuthState
+from utils.database import UsersTable
 import main_menu.states
 
 load_dotenv()
@@ -24,12 +25,16 @@ dp = Dispatcher(storage=MemoryStorage())
 
 @dp.message(CommandStart())
 async def start(message: Message, state: FSMContext):
-    await message.answer(
-        "Приветствуем! Для продолжения использования данного бота "
-        "Вам нужно авторизоваться с помощью Вашей контактной информации (номер телефона и т.д.)",
-        reply_markup=auth_kb()
-        )
-    await state.set_state(AuthState.contact)
+    db = UsersTable()
+    if not await db.check_user(message.from_user.id):
+        await message.answer(
+            "Приветствуем! Для продолжения использования данного бота "
+            "Вам нужно авторизоваться с помощью Вашей контактной информации (номер телефона и т.д.)",
+            reply_markup=auth_kb()
+            )
+        await state.set_state(AuthState.contact)
+    else:
+        await message.answer(text="Вы зареганы")
 
 
 async def main():
