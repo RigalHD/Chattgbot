@@ -6,10 +6,8 @@ from aiogram.filters.callback_data import CallbackData
 class MainMenuCbData(CallbackData, prefix="pag"):
     action: str
 
-
 def main_menu_kb():
     builder = InlineKeyboardBuilder()
-
     builder.row(
         InlineKeyboardButton(
         text="Информация",
