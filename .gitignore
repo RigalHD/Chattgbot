@@ -9,6 +9,7 @@ __pycache__/
 secret_data.py
 test_.txt
 my_account.session
+my_account.session-journal
 
 *.db
 .db
