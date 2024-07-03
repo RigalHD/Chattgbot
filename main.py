@@ -3,11 +3,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-from aiogram.types import Message
 from dotenv import load_dotenv
 from os import getenv
 
-import callbacks.main_menu
+import main_menu.callbacks
 from keyboards.inline import main_menu_kb
 import callbacks
 
@@ -28,7 +27,7 @@ async def start(message: Message):
 
 
 async def main():
-    dp.include_routers(callbacks.main_menu.router)
+    dp.include_routers(main_menu.callbacks.router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
