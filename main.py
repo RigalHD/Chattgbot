@@ -34,7 +34,10 @@ async def start(message: Message, state: FSMContext):
             )
         await state.set_state(AuthState.contact)
     else:
-        await message.answer(text="Вы зареганы")
+        await message.answer(
+            text=f"Добрый день, {message.from_user.first_name}!",
+            reply_markup=main_menu_kb()
+            )
 
 
 async def main():
