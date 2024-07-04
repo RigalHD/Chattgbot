@@ -8,7 +8,7 @@ load_dotenv()
 api_id = int(getenv("api_id_"))
 api_hash = getenv("api_hash_")
 
-# ---
+# ---!----10
 
 async def main():
     async with Client("my_account", api_id, api_hash) as app:
