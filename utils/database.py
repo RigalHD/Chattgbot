@@ -62,15 +62,27 @@ class UsersTable(DataBase):
         finally:
             await connection.close()
 
-    async def check_user(self, telegram_id: int):
+    async def check_user(self, telegram_id: int) -> bool:
         try:
             connection: asyncpg.Connection = await self.connect()
             exists = await connection.fetchval(
-                """
-                SELECT EXISTS(SELECT 1 FROM users WHERE telegram_id = $1)
-                """, telegram_id
+                "SELECT EXISTS(SELECT 1 FROM users WHERE telegram_id = $1)", 
+                telegram_id
              )
             return bool(exists)
+        except Exception as e:
+            print(e)
+        finally:
+            await connection.close()
+
+    async def get_user_permissions_level(self, telegram_id: int) -> int:
+        try:
+            connection: asyncpg.Connection = await self.connect()
+            permissions_level = await connection.fetchval(
+                "SELECT permissions_level FROM users WHERE telegram_id = $1", 
+                telegram_id
+             )
+            return permissions_level
         except Exception as e:
             print(e)
         finally:

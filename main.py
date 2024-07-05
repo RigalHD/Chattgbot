@@ -36,11 +36,12 @@ async def start(message: Message, state: FSMContext):
     else:
         await message.answer(
             text=f"Добрый день, {message.from_user.first_name}!",
-            reply_markup=main_menu_kb()
+            reply_markup=main_menu_kb(await db.get_user_permissions_level(message.from_user.id))
             )
 
 
 async def main():
+    # Запуск телеграм бота, с удалением запросов к нему, сделанных во время его выключенного состояния
     dp.include_routers(main_menu.callbacks.router, main_menu.states.router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

@@ -2,6 +2,7 @@ from pyrogram import Client
 from dotenv import load_dotenv
 from pyrogram.types import Chat, Message, ChatMember
 from os import getenv
+import datetime
 import json
 
 
@@ -35,11 +36,6 @@ class Parsed_Chat:
         with open('result.json', 'w') as file:
             json.dump(data, file, indent=4)
 
-        # with open('result.json', 'r') as file:
-        #     data = json.load(file)
-        #     print(data["messages"])
-        
-
     @property
     def members(self) -> tuple:
         return self._members
@@ -61,9 +57,9 @@ async def parse_chat() -> Parsed_Chat:
     members = []
     async with Client("my_account", api_id, api_hash) as app:
         # await app.send_message("me", "test")
-        chat: Chat = await app.get_chat("https://t.me/+qouN6uyMaVs5OTMy")
+        chat: Chat = await app.get_chat("")
         async for message in app.get_chat_history(chat.id):
-            if message.from_user:
+            if all((message.from_user, message.text, message.date < (datetime.datetime.now() - datetime.timedelta(days=180)))):
                 messages.append(message)
         async for member in app.get_chat_members(chat.id):
             if member:

@@ -8,13 +8,13 @@ def neuro_marketing(chat_messages_text: str) -> tuple[str]:
     # load_dotenv()
     # openai_key = getenv("openai_api_token")
     # openai.api_key = openai_key
-    
-    prompt =\
-        "Ты профессиональный маркетолог."\
-        "Выбираешь самые важные смыслы из текста чата, в котором общаются люди."\
-        "Найди топ-10 темы для создания рекламной стратегии."
+    # prompt =\
+    #     "Ты профессиональный маркетолог."\
+    #     "Выбираешь самые важные смыслы из текста чата, в котором общаются люди."\
+    #     "Найди топ-10 темы для создания рекламной стратегии."
     # В prompt нужно вставить основной промпт для gpt, чтобы он понял свою роль
     chat_gpt_answers: list[str] = []
+    # print(len(chat_messages_text))
     requests_count: int = len(chat_messages_text) // 50000 + 1 \
         if len(chat_messages_text) % 50000 != 0 else len(chat_messages_text) // 50000
     # Так как один промпт ограничен по токенам, будет сделано несколько промптов
