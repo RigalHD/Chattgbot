@@ -1,20 +1,44 @@
 from pyrogram import Client
 from dotenv import load_dotenv
-from pyrogram.types import Chat
+from pyrogram.types import Chat, Message, ChatMember
 from os import getenv
+import json
 
 
 class Parsed_Chat:
     def __init__(
             self, 
-            chat: Chat,
-            members: list | tuple, 
+            members: list | tuple[ChatMember], 
             messages: list | tuple
-            ):
-        print(chat.id)
-        self._members: tuple = tuple(members)
-        self._messages: tuple = tuple(messages)
-        self._chat: int = chat
+            ) -> None:
+        self._members: tuple[ChatMember] = tuple(members)
+        self._messages: tuple[Message] = tuple(messages)
+    
+    def get_messages_text(self) -> str:
+        return "\n".join([message.text for message in self.messages if message.text])
+
+    def make_text_file(self):
+        with open("test_.txt", "w", encoding="utf-8") as file:
+            # file.write("История сообщений чата: \n")
+            for message in self.messages:
+                if message.text:
+                    file.write(message.text + "\n")
+
+    def make_json_file(self):
+        data = {
+            "messages": tuple([{
+                "user_id": message.from_user.id, 
+                "datetime": message.date.strftime("%d-%m-%Y %H:%M:%S"), 
+                "text": message.text
+                } for message in self.messages if message.text]),
+            }
+        with open('result.json', 'w') as file:
+            json.dump(data, file, indent=4)
+
+        # with open('result.json', 'r') as file:
+        #     data = json.load(file)
+        #     print(data["messages"])
+        
 
     @property
     def members(self) -> tuple:
@@ -23,10 +47,6 @@ class Parsed_Chat:
     @property
     def messages(self) -> tuple:
         return self._messages
-    
-    @property
-    def chat(self) -> Chat:
-        return self._chat
 
 
 async def parse_chat() -> Parsed_Chat:
@@ -41,11 +61,11 @@ async def parse_chat() -> Parsed_Chat:
     members = []
     async with Client("my_account", api_id, api_hash) as app:
         # await app.send_message("me", "test")
-        chat: Chat = await app.get_chat("https://t.me/+cyVZuxr5T7xhMTM6")
+        chat: Chat = await app.get_chat("https://t.me/+qouN6uyMaVs5OTMy")
         async for message in app.get_chat_history(chat.id):
             if message.from_user:
                 messages.append(message)
         async for member in app.get_chat_members(chat.id):
             if member:
                 members.append(member)
-        return Parsed_Chat(members=members, messages=messages, chat=chat)
+        return Parsed_Chat(members=members, messages=messages)

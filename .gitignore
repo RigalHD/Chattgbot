@@ -6,6 +6,7 @@ __pycache__/
 .pyc
 .env
 
+result.json
 secret_data.py
 test_.txt
 my_account.session

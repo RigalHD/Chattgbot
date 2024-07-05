@@ -1,6 +1,7 @@
 import asyncpg
 import os
 
+
 class DataBase:
     def __init__(self) -> None:
         pass
@@ -74,4 +75,3 @@ class UsersTable(DataBase):
             print(e)
         finally:
             await connection.close()
-
