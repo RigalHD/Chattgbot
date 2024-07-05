@@ -39,6 +39,7 @@ async def start(message: Message, state: FSMContext):
             reply_markup=main_menu_kb()
             )
 
+# ---!----10
 
 async def main():
     dp.include_routers(main_menu.callbacks.router, main_menu.states.router)
