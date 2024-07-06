@@ -16,9 +16,15 @@ class Parsed_Chat:
         self._messages: tuple[Message] = tuple(messages)
     
     def get_messages_text(self) -> str:
+        """
+        Возвращает строку, в которой находятся все сообщения
+        """
         return "\n".join([message.text for message in self.messages if message.text])
 
     def make_text_file(self):
+        """
+        Создает текстовый файл, в котором находятся текста всех сообщений чата
+        """
         with open("test_.txt", "w", encoding="utf-8") as file:
             # file.write("История сообщений чата: \n")
             for message in self.messages:
@@ -26,6 +32,11 @@ class Parsed_Chat:
                     file.write(message.text + "\n")
 
     def make_json_file(self):
+        """
+        Создаёт json файл, в котором хранится кортеж словарей,
+        содержащих краткую информацию о сообщении
+        (тг айди отправителя, время отправки, текст сообщения)
+        """
         data = {
             "messages": tuple([{
                 "user_id": message.from_user.id, 
@@ -47,8 +58,8 @@ class Parsed_Chat:
 
 async def parse_chat() -> Parsed_Chat:
     load_dotenv()
-    api_id = int(getenv("api_id_"))
-    api_hash = getenv("api_hash_")
+    api_id: int = int(getenv("api_id_"))
+    api_hash: str = getenv("api_hash_")
     # result: dict = {
     #        "chat_history": [],
     #        "chat_members": [], 
@@ -57,9 +68,11 @@ async def parse_chat() -> Parsed_Chat:
     members = []
     async with Client("my_account", api_id, api_hash) as app:
         # await app.send_message("me", "test")
-        chat: Chat = await app.get_chat("")
+        chat: Chat = await app.get_chat(getenv("chat_invite_link"))
         async for message in app.get_chat_history(chat.id):
-            if all((message.from_user, message.text, message.date < (datetime.datetime.now() - datetime.timedelta(days=180)))):
+            if all(
+                (message.from_user, message.text, message.date < (datetime.datetime.now() - datetime.timedelta(days=180)))
+                ):
                 messages.append(message)
         async for member in app.get_chat_members(chat.id):
             if member:
