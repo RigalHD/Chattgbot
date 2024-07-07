@@ -15,7 +15,7 @@ class ParseChatCbData(CallbackData, prefix="pag"):
 
 class SendToGPTCbData(CallbackData, prefix="pag"):
     action: str
-    data: Any
+    query_id: int
 
 
 def main_menu_kb(user_perms_lvl: int):
@@ -73,7 +73,7 @@ def send_to_gpt_kb(query_id: int):
     builder.row(
         InlineKeyboardButton(
         text="Отправить на обработку к ChatGPT",
-        callback_data=SendToGPTCbData(action="Send_to_gpt", data=query_id).pack()
+        callback_data=SendToGPTCbData(action="Send_to_gpt", query_id=query_id).pack()
         ),
     )
     builder.row(

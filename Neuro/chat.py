@@ -6,7 +6,7 @@ import json
 
 
 def neuro_marketing(query_id: int) -> tuple[str]:
-    if isinstance(query_id, str):
+    if isinstance(query_id, int):
         # Следующий код нужно раскомментировать, после получения доступа к api chatgpt
         # load_dotenv()
         # openai_key = getenv("openai_api_token")
@@ -45,4 +45,4 @@ def neuro_marketing(query_id: int) -> tuple[str]:
             # chat_gpt_answers.append(result['choices'][0]['message']['content'])
             chat_gpt_answers.append(f"text_{n}") # заглушка
         
-    return tuple(chat_gpt_answers)
+        return tuple(chat_gpt_answers)

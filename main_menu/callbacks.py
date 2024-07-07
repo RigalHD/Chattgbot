@@ -21,7 +21,6 @@ async def parse_chat_limit_handler(query: CallbackQuery, callback_data: inline.M
             )
     except Exception as e:
         print(e)
-        raise e
         await query.message.edit_text(
             text="Произошла ошибка", 
             reply_markup=inline.back_to_main_menu_kb()
@@ -34,11 +33,6 @@ async def parse_chat_handler(query: CallbackQuery, callback_data: inline.ParseCh
     try:
         chat = await parse_chat(callback_data.day_limit)
         chat.make_json_file(query.id)
-        # with open(f'bot_temp_files/{query.id}.json', 'r') as file:
-        #     data = json.load(file)
-
-        # json_string = json.dumps(data, indent=2)
-        # json_file = BytesIO(json_string.encode())
         await query.message.answer_document(
             document=FSInputFile(
                 f'bot_temp_files/{query.id}.json', 
@@ -50,29 +44,20 @@ async def parse_chat_handler(query: CallbackQuery, callback_data: inline.ParseCh
             text="Парсинг прошел успешно. Хотите отправить данные на обработку в ChatGPT?", 
             reply_markup=inline.send_to_gpt_kb(query.id)
             )
-
-        # print(chat.members)
-        # print(neuro_marketing(chat.get_messages_text()))
+        
     except Exception as e:
         print(e)
-        raise e
         await query.message.edit_text(
             text="Произошла ошибка", 
             reply_markup=inline.back_to_main_menu_kb()
             )
-    # print(*chat.members)
-    # print([i.text for i in chat.messages])
-    # print(chat.messages)
-    # print(chat.messages[0])
-    # print(neuro_marketing(chat.get_messages_text()))
+        
 
-
-@router.callback_query(inline.MainMenuCbData.filter(F.action == "Send_to_gpt"))
-async def send_to_gpt_handler(query: CallbackQuery, callback_data: inline.MainMenuCbData):
+@router.callback_query(inline.SendToGPTCbData.filter(F.action == "Send_to_gpt"))
+async def send_to_gpt_handler(query: CallbackQuery, callback_data: inline.SendToGPTCbData):
     await query.message.edit_text(text="Обработка данных может занять некоторое время")
     try:
-        # chat = await parse_chat()
-        message_text=neuro_marketing(query_id=callback_data.data)
+        message_text=neuro_marketing(query_id=callback_data.query_id)
     except Exception as e:
         print(e)
         message_text="Произошла ошибка"

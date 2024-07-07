@@ -16,44 +16,46 @@ class Parsed_Chat:
         self._members: tuple[ChatMember] = tuple(members)
         self._messages: tuple[Message] = tuple(messages)
     
-    def get_messages_text(self) -> str:
+    def get_messages_text(
+            self
+            ) -> str:
         """
         Возвращает строку, в которой находятся все сообщения
         """
-        return "\n".join([message.text for message in self.messages if message.text])
+        return "\n".join(
+            [message.text for message in self.messages if message.text]
+            )
 
-    def make_text_file(self):
+    def make_text_file(
+            self
+            ) -> None:
         """
         Создает текстовый файл, в котором находятся текста всех сообщений чата
         """
         with open("test_.txt", "w", encoding="utf-8") as file:
-            # file.write("История сообщений чата: \n")
             for message in self.messages:
                 if message.text:
                     file.write(message.text + "\n")
 
-    def make_json_file(self, file_name: str):
+    def make_json_file(
+            self, 
+            file_name: str
+            ) -> None:
         """
         Создаёт json файл, в котором хранится кортеж словарей,
         содержащих краткую информацию о сообщении
         (тг айди отправителя, время отправки, текст сообщения)
         """
-        # all_replied_messages = [(i.reply_to_message_id, i.id) for i in self._messages if i.reply_to_message_id]
-        # print(all_replied_messages)
-        
         data = {}
-        # {
-        #         "user_id": message.from_user.id, 
-        #         "datetime": message.date.strftime("%d-%m-%Y %H:%M:%S"), 
-        #         "text": message.text
-        #         } for message in self._messages if message.text])
         for message in self._messages:
             try:
                 data[message.id] = {
                     "user_id": message.from_user.id if message.from_user else message.sender_chat.id, 
                     "datetime": message.date.strftime("%d-%m-%Y %H:%M:%S"), 
                     "text": message.text,
-                    "messages_replied_to_this_ids": [msg.id for msg in self._messages if msg.reply_to_message_id == message.id]
+                    "messages_replied_to_this_ids": [
+                        msg.id for msg in self._messages if msg.reply_to_message_id == message.id
+                        ]
                     }
             except AttributeError:
                 print(message)
@@ -80,10 +82,6 @@ async def parse_chat(limit_of_days: int = 180) -> Parsed_Chat:
     load_dotenv()
     api_id: int = int(getenv("api_id_"))
     api_hash: str = getenv("api_hash_")
-    # result: dict = {
-    #        "chat_history": [],
-    #        "chat_members": [], 
-    #     }
     messages = []
     members = []
     async with Client("my_account", api_id, api_hash) as app:
@@ -96,7 +94,9 @@ async def parse_chat(limit_of_days: int = 180) -> Parsed_Chat:
                 ]
             if all(conditions):
                 if limit_of_days == -1\
-                      or message.date > (datetime.datetime.now() - datetime.timedelta(days=limit_of_days)):
+                      or message.date > (
+                          datetime.datetime.now() - datetime.timedelta(days=limit_of_days)
+                          ):
                     messages.append(message)
                     
         async for member in app.get_chat_members(chat.id):
