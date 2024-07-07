@@ -4,6 +4,7 @@ from aiogram import Router, F
 from Neuro.chat import neuro_marketing
 from parser.bot import parse_chat
 from keyboards import inline
+from utils.database import UsersTable
 
 router = Router()
 
