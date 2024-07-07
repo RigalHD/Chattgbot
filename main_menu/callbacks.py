@@ -1,12 +1,9 @@
 from aiogram.types import CallbackQuery, FSInputFile
 from aiogram import Router, F
-from io import BytesIO
-import json
 
 from Neuro.chat import neuro_marketing
 from parser.bot import parse_chat
 from keyboards import inline
-from utils.database import UsersTable
 
 router = Router()
 
