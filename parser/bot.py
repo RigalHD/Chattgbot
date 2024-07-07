@@ -75,8 +75,8 @@ class Parsed_Chat:
 
 async def parse_chat(limit_of_days: int = 180) -> Parsed_Chat:
     """
-    :param limit_of_days: парсит чат до 
-        <сегодняшняя дата> - limit_of_days дней.
+    :param limit_of_days: парсит чат до даты
+        <сегодняшняя дата> - limit_of_days.
         Если limit_of_days == -1, то произойдет парсинг всего чата
     """
     load_dotenv()

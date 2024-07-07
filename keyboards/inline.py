@@ -1,7 +1,6 @@
 from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.filters.callback_data import CallbackData
-from typing import Any
 
 
 class MainMenuCbData(CallbackData, prefix="pag"):
@@ -67,6 +66,7 @@ def parse_chat_kb():
     builder.row(*row)
 
     return builder.as_markup()
+
 
 def send_to_gpt_kb(query_id: int):
     builder = InlineKeyboardBuilder()

@@ -9,5 +9,6 @@ def auth_kb():
             text="Поделиться контактом", 
             request_contact=True
             )
-            )
+        )
+    
     return builder.as_markup()
