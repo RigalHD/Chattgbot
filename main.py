@@ -1,26 +1,52 @@
-from pyrogram import Client
+import asyncio
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.filters import CommandStart
+from aiogram.types import Message
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.context import FSMContext
 from dotenv import load_dotenv
 from os import getenv
-# from secret_data import api_id, api_hash
-import asyncio
+
+import main_menu.callbacks
+from keyboards.inline import main_menu_kb
+from keyboards.reply import auth_kb
+from main_menu.states import AuthState
+from utils.database import UsersTable
+import main_menu.states
 
 load_dotenv()
-api_id = int(getenv("api_id_"))
-api_hash = getenv("api_hash_")
+bot = Bot(
+    getenv("TOKEN"), 
+    default=DefaultBotProperties(parse_mode="HTML")
+    )
+dp = Dispatcher(storage=MemoryStorage())
 
-# ---
+
+@dp.message(CommandStart())
+async def start(message: Message, state: FSMContext):
+    db = UsersTable()
+    if not await db.check_user(message.from_user.id):
+        await message.answer(
+            "Приветствуем! Для продолжения использования данного бота "
+            "Вам нужно авторизоваться с помощью Вашей контактной информации (номер телефона и т.д.)",
+            reply_markup=auth_kb()
+            )
+        await state.set_state(AuthState.contact)
+    else:
+        await message.answer(
+            text=f"Добрый день, {message.from_user.first_name}!",
+            reply_markup=main_menu_kb(await db.get_user_permissions_level(message.from_user.id))
+            )
+
 
 async def main():
-    async with Client("my_account", api_id, api_hash) as app:
-        # await app.send_message("me", "test")
-        with open("test_.txt", "w", encoding="utf-8") as file:
-            file.write("История сообщений чата: \n")
-            async for message in app.get_chat_history("-1002211055178"):
-                if message.from_user:
-                    file.write(f"{message.from_user.first_name}: {message.text} | Айди пользователя: {message.from_user.id}\n")
-            file.write("Участники чата: \n")
-            async for member in app.get_chat_members("-1002211055178"):
-                file.write(f"{member.user.first_name}: | Айди пользователя: {member.user.id}\n")
+    # Запуск телеграм бота, с удалением запросов к нему, сделанных во время его выключенного состояния
+    dp.include_routers(main_menu.callbacks.router, main_menu.states.router)
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+

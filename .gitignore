@@ -2,13 +2,17 @@ venv/
 .vscode/
 __pycache__/
 .idea/
+bot_temp_files/
 
 .pyc
 .env
 
+config.py
+result.json
 secret_data.py
 test_.txt
 my_account.session
+my_account.session-journal
 
 *.db
 .db
