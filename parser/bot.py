@@ -60,6 +60,11 @@ class Parsed_Chat:
 
 
 async def parse_chat(limit_of_days: int = 180) -> Parsed_Chat:
+    """
+    :param limit_of_days: парсит чат до 
+        <сегодняшняя дата> - limit_of_days дней.
+        Если limit_of_days == -1, то произойдет парсинг всего чата
+    """
     load_dotenv()
     api_id: int = int(getenv("api_id_"))
     api_hash: str = getenv("api_hash_")

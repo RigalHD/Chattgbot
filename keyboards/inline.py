@@ -38,7 +38,7 @@ def main_menu_kb(user_perms_lvl: int):
 
 def parse_chat_kb():
     builder = InlineKeyboardBuilder()
-    day_limits = [360, 180, 90, 60, 30, 14, 7, 3, 2, 1, -1]
+    day_limits = [360, 180, 90, 60, 30, 14, 7, 3, 2, 1, -1] # -1 = спарсит весь чат
     row_length = 3
     for i in range(len(day_limits) // row_length):
         row = []
