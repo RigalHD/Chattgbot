@@ -38,8 +38,8 @@ class Parsed_Chat:
         содержащих краткую информацию о сообщении
         (тг айди отправителя, время отправки, текст сообщения)
         """
-        all_replied_messages = [(i.reply_to_message_id, i.id) for i in self._messages if i.reply_to_message_id]
-        print(all_replied_messages)
+        # all_replied_messages = [(i.reply_to_message_id, i.id) for i in self._messages if i.reply_to_message_id]
+        # print(all_replied_messages)
         
         data = {}
         # {
