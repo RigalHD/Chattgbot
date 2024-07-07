@@ -2,6 +2,7 @@ venv/
 .vscode/
 __pycache__/
 .idea/
+bot_temp_files/
 
 .pyc
 .env
