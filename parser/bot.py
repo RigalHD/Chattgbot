@@ -2,6 +2,7 @@ from pyrogram import Client
 from dotenv import load_dotenv
 from pyrogram.types import Chat, Message, ChatMember
 from os import getenv
+import os
 import datetime
 import json
 
@@ -31,7 +32,7 @@ class Parsed_Chat:
                 if message.text:
                     file.write(message.text + "\n")
 
-    def make_json_file(self):
+    def make_json_file(self, file_name: str):
         """
         Создаёт json файл, в котором хранится кортеж словарей,
         содержащих краткую информацию о сообщении
@@ -44,7 +45,9 @@ class Parsed_Chat:
                 "text": message.text
                 } for message in self.messages if message.text]),
             }
-        with open('result.json', 'w') as file:
+        if not os.path.isdir("bot_temp_files/"):
+            os.makedirs("bot_temp_files/")
+        with open(f'bot_temp_files/{file_name}.json', 'w') as file:
             json.dump(data, file, indent=4)
 
     @property
@@ -56,7 +59,7 @@ class Parsed_Chat:
         return self._messages
 
 
-async def parse_chat() -> Parsed_Chat:
+async def parse_chat(limit_of_days: int = 180) -> Parsed_Chat:
     load_dotenv()
     api_id: int = int(getenv("api_id_"))
     api_hash: str = getenv("api_hash_")
@@ -70,10 +73,15 @@ async def parse_chat() -> Parsed_Chat:
         # await app.send_message("me", "test")
         chat: Chat = await app.get_chat(getenv("chat_invite_link"))
         async for message in app.get_chat_history(chat.id):
-            if all(
-                (message.from_user, message.text, message.date < (datetime.datetime.now() - datetime.timedelta(days=180)))
-                ):
-                messages.append(message)
+            conditions = [
+                message.from_user, 
+                message.text
+                ]
+            if all(conditions):
+                if limit_of_days == -1\
+                      or message.date > (datetime.datetime.now() - datetime.timedelta(days=limit_of_days)):
+                    messages.append(message)
+                    
         async for member in app.get_chat_members(chat.id):
             if member:
                 members.append(member)
