@@ -20,7 +20,7 @@ def neuro_marketing(query_id: int) -> tuple[str]:
             data = json.load(file)
         # os.remove(f'bot_temp_files/{query_id}.json')
         chat_messages_text = "\n".join(
-            [message["text"] for message in data["messages"] if message["text"]]
+            [data[key]["text"] for key in data.keys() if data[key]["text"]]
             )
 
         chat_gpt_answers: list[str] = []

@@ -38,13 +38,25 @@ class Parsed_Chat:
         содержащих краткую информацию о сообщении
         (тг айди отправителя, время отправки, текст сообщения)
         """
-        data = {
-            "messages": tuple([{
-                "user_id": message.from_user.id, 
-                "datetime": message.date.strftime("%d-%m-%Y %H:%M:%S"), 
-                "text": message.text
-                } for message in self.messages if message.text]),
-            }
+        all_replied_messages = [(i.reply_to_message_id, i.id) for i in self._messages if i.reply_to_message_id]
+        print(all_replied_messages)
+        
+        data = {}
+        # {
+        #         "user_id": message.from_user.id, 
+        #         "datetime": message.date.strftime("%d-%m-%Y %H:%M:%S"), 
+        #         "text": message.text
+        #         } for message in self._messages if message.text])
+        for message in self._messages:
+            try:
+                data[message.id] = {
+                    "user_id": message.from_user.id if message.from_user else message.sender_chat.id, 
+                    "datetime": message.date.strftime("%d-%m-%Y %H:%M:%S"), 
+                    "text": message.text,
+                    "messages_replied_to_this_ids": [msg.id for msg in self._messages if msg.reply_to_message_id == message.id]
+                    }
+            except AttributeError:
+                print(message)
         if not os.path.isdir("bot_temp_files/"):
             os.makedirs("bot_temp_files/")
         with open(f'bot_temp_files/{file_name}.json', 'w') as file:
@@ -79,8 +91,8 @@ async def parse_chat(limit_of_days: int = 180) -> Parsed_Chat:
         chat: Chat = await app.get_chat(getenv("chat_invite_link"))
         async for message in app.get_chat_history(chat.id):
             conditions = [
-                message.from_user, 
-                message.text
+                message.from_user or message.sender_chat, 
+                message.text,
                 ]
             if all(conditions):
                 if limit_of_days == -1\
